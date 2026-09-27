@@ -1,18 +1,23 @@
-# Sri Lanka Horoscope Desktop — Phase 1
+# Sri Lanka Horoscope Desktop — Phase 1 FIX 2
 
-Phase 1 focuses on:
-- Sri Lanka local birth time -> UTC conversion
-- Asia/Colombo timezone handling
-- Sri Lankan place presets with latitude/longitude
+This version removes the Windows `zoneinfo/tzdata` dependency for Sri Lanka.
+The app uses the Sri Lanka civil offset UTC+05:30 directly, so the packaged EXE
+does not depend on a Windows timezone database for `Asia/Colombo`.
+
+It also keeps:
+- Local Sri Lanka birth time -> UTC
 - Lahiri sidereal calculations
 - Planetary longitude, latitude and speed
 - Rahu/Ketu
 - Ascendant/Lagna foundation
-- SQLite saved horoscope records
+- Sri Lankan place presets
+- SQLite database migration
 
 Run:
-1. Python 3.11+
-2. python -m venv .venv
-3. .venv\\Scripts\\activate
-4. pip install -r requirements.txt
-5. python main.py
+python -m venv .venv
+.venv\\Scripts\\activate
+pip install -r requirements.txt
+python main.py
+
+GitHub Actions PyInstaller:
+pyinstaller --noconfirm --clean --windowed --name SriLankaHoroscope --collect-all swisseph main.py
