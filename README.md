@@ -1,21 +1,18 @@
-# Sri Lanka Horoscope Desktop V1
+# Sri Lanka Horoscope Desktop — Phase 1
 
-Windows desktop starter for a Sinhala/Vedic horoscope application.
+Phase 1 focuses on:
+- Sri Lanka local birth time -> UTC conversion
+- Asia/Colombo timezone handling
+- Sri Lankan place presets with latitude/longitude
+- Lahiri sidereal calculations
+- Planetary longitude, latitude and speed
+- Rahu/Ketu
+- Ascendant/Lagna foundation
+- SQLite saved horoscope records
 
-## V1
-- New horoscope entry
-- SQLite customer/horoscope storage
-- Search saved horoscopes
-- Basic Vedic calculation foundation using Swiss Ephemeris
-- Sinhala/English UI labels
-- PDF report foundation
-
-## Run
-1. Install Python 3.11+.
-2. Open Command Prompt in this folder.
-3. `python -m venv .venv`
-4. `.venv\Scripts\activate`
-5. `pip install -r requirements.txt`
-6. `python main.py`
-
-Note: V1 deliberately separates astronomical calculations from interpretation/prediction rules. The prediction engine will be added after calculation outputs are validated against a reference.
+Run:
+1. Python 3.11+
+2. python -m venv .venv
+3. .venv\\Scripts\\activate
+4. pip install -r requirements.txt
+5. python main.py
