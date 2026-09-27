@@ -1,55 +1,21 @@
-# Business Accounting System
+# Sri Lanka Horoscope Desktop — Phase 2
 
-## V3 — Daily Transactions
+Phase 2 adds:
+- Rashi / zodiac sign conversion
+- Nakshatra and Pada
+- Rashi lord
+- Whole-sign Vedic houses
+- House/sign/planet summary
+- D1 / Rashi chart display
+- Planet placement by house
 
-This build adds user-friendly daily transaction entry while keeping double-entry accounting automatic.
+Phase 1 Sri Lanka time handling and Lahiri sidereal calculations are retained.
 
-### Included
-- Dashboard
-- Opening Balance
-- Daily Transaction screen
-- Automatic debit/credit posting
-- General Ledger
-- Trial Balance
-- Profit & Loss
-- Balance Sheet
-- SQLite local database
+Run:
+python -m venv .venv
+.venv\\Scripts\\activate
+pip install -r requirements.txt
+python main.py
 
-### Transaction types
-- Cash Sale
-- Bank Sale
-- Credit Sale
-- Customer Payment
-- Cash Customer Payment
-- Cash/Bank Purchase
-- Supplier Payment
-- Expense payments
-- Other Income
-- Owner Investment
-- Owner Drawing
-
-### Run
-```bash
-python -m app.main
-```
-
-### Build EXE
-```bash
-py -m pip install pyinstaller
-py -m PyInstaller --noconfirm --onefile --windowed --name BusinessAccounting app/main.py
-```
-
-The EXE will be created under `dist`.
-
-## Next
-V4 will add:
-- Customer master
-- Supplier master
-- Multiple bank accounts
-- Receivable/payable aging
-- Inventory
-- Purchase and sales invoices
-- Bank reconciliation
-- Period closing
-- Backup/restore
-- Management decision dashboard
+For the GitHub Actions EXE build:
+pyinstaller --noconfirm --clean --windowed --name SriLankaHoroscope --collect-all swisseph main.py
