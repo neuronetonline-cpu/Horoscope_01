@@ -1,23 +1,14 @@
-# Sri Lanka Horoscope Desktop — Phase 2 Fixed
+# Sri Lanka Horoscope Desktop — Phase 3
 
-Phase 2 includes:
-- Sri Lanka UTC+05:30 handling without Windows timezone database dependency
-- Lahiri sidereal planetary calculations
-- Rashi / Zodiac conversion
-- Rashi lord
-- Nakshatra and Pada
-- Whole-sign Vedic houses
-- Planet-to-house placement
-- Proper 12-sign South Indian style D1 / Rashi chart
-- Clear Lagna marking
-- Saved horoscope search
-- Existing SQLite database migration
-
-Run:
-python -m venv .venv
-.venv\\Scripts\\activate
-pip install -r requirements.txt
-python main.py
+Adds to Phase 2:
+- D9 / Navamsa calculation for Lagna and all planets
+- D9 / Navamsa chart
+- D1 to D9 planet placement table
+- Vimshottari Mahadasha
+- Vimshottari Antardasha
+- Birth Nakshatra lord and first Mahadasha balance
+- Current Mahadasha / Antardasha
+- Existing Lahiri, Rashi, Lagna, Nakshatra, houses, save/search and Sri Lanka UTC+05:30 handling
 
 GitHub Actions EXE:
 pyinstaller --noconfirm --clean --windowed --name SriLankaHoroscope --collect-all swisseph main.py

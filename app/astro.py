@@ -1,173 +1,98 @@
 from datetime import datetime, timezone, timedelta
 import swisseph as swe
 
-PLANETS = [
-    ("Sun", swe.SUN),
-    ("Moon", swe.MOON),
-    ("Mercury", swe.MERCURY),
-    ("Venus", swe.VENUS),
-    ("Mars", swe.MARS),
-    ("Jupiter", swe.JUPITER),
-    ("Saturn", swe.SATURN),
-    ("Rahu", swe.MEAN_NODE),
-]
+SIGNS=[
+("Mesha","මේෂ","Aries","Mars"),("Vrishabha","වෘෂභ","Taurus","Venus"),
+("Mithuna","මිථුන","Gemini","Mercury"),("Kataka","කටක","Cancer","Moon"),
+("Simha","සිංහ","Leo","Sun"),("Kanya","කන්‍යා","Virgo","Mercury"),
+("Thula","තුලා","Libra","Venus"),("Vrischika","වෘශ්චික","Scorpio","Mars"),
+("Dhanus","ධනු","Sagittarius","Jupiter"),("Makara","මකර","Capricorn","Saturn"),
+("Kumbha","කුම්භ","Aquarius","Saturn"),("Meena","මීන","Pisces","Jupiter")]
 
-SIGNS = [
-    ("Mesha", "මේෂ", "Aries", "Mars"),
-    ("Vrishabha", "වෘෂභ", "Taurus", "Venus"),
-    ("Mithuna", "මිථුන", "Gemini", "Mercury"),
-    ("Kataka", "කටක", "Cancer", "Moon"),
-    ("Simha", "සිංහ", "Leo", "Sun"),
-    ("Kanya", "කන්‍යා", "Virgo", "Mercury"),
-    ("Thula", "තුලා", "Libra", "Venus"),
-    ("Vrischika", "වෘශ්චික", "Scorpio", "Mars"),
-    ("Dhanus", "ධනු", "Sagittarius", "Jupiter"),
-    ("Makara", "මකර", "Capricorn", "Saturn"),
-    ("Kumbha", "කුම්භ", "Aquarius", "Saturn"),
-    ("Meena", "මීන", "Pisces", "Jupiter"),
-]
+NAK=[
+("Ashwini","අස්විද","Ketu"),("Bharani","බෙරණ","Venus"),("Krittika","කැති","Sun"),
+("Rohini","රෙහෙන","Moon"),("Mrigashira","මුවසිරස","Mars"),("Ardra","අද","Rahu"),
+("Punarvasu","පුනාවස","Jupiter"),("Pushya","පුෂ","Saturn"),("Ashlesha","අස්ලිස","Mercury"),
+("Magha","මා","Ketu"),("Purva Phalguni","පුවපල්","Venus"),("Uttara Phalguni","උත්‍රපල්","Sun"),
+("Hasta","හත","Moon"),("Chitra","සිත","Mars"),("Swati","සුවණ","Rahu"),
+("Vishakha","විසා","Jupiter"),("Anuradha","අනුර","Saturn"),("Jyeshtha","දෙට","Mercury"),
+("Mula","මුල","Ketu"),("Purva Ashadha","පුවසල","Venus"),("Uttara Ashadha","උත්‍රසල","Sun"),
+("Shravana","සුවණ","Moon"),("Dhanishtha","දෙනට","Mars"),("Shatabhisha","සියාවස","Rahu"),
+("Purva Bhadrapada","පුවපුටුප","Jupiter"),("Uttara Bhadrapada","උත්‍රපුටුප","Saturn"),
+("Revati","රේවතී","Mercury")]
 
-NAKSHATRAS = [
-    ("Ashwini", "අස්විද", "Ketu"),
-    ("Bharani", "බෙරණ", "Venus"),
-    ("Krittika", "කැති", "Sun"),
-    ("Rohini", "රෙහෙන", "Moon"),
-    ("Mrigashira", "මුවසිරස", "Mars"),
-    ("Ardra", "අද", "Rahu"),
-    ("Punarvasu", "පුනාවස", "Jupiter"),
-    ("Pushya", "පුෂ", "Saturn"),
-    ("Ashlesha", "අස්ලිස", "Mercury"),
-    ("Magha", "මා", "Ketu"),
-    ("Purva Phalguni", "පුවපල්", "Venus"),
-    ("Uttara Phalguni", "උත්‍රපල්", "Sun"),
-    ("Hasta", "හත", "Moon"),
-    ("Chitra", "සිත", "Mars"),
-    ("Swati", "සුවණ", "Rahu"),
-    ("Vishakha", "විසා", "Jupiter"),
-    ("Anuradha", "අනුර", "Saturn"),
-    ("Jyeshtha", "දෙට", "Mercury"),
-    ("Mula", "මුල", "Ketu"),
-    ("Purva Ashadha", "පුවසල", "Venus"),
-    ("Uttara Ashadha", "උත්‍රසල", "Sun"),
-    ("Shravana", "සුවණ", "Moon"),
-    ("Dhanishtha", "දෙනට", "Mars"),
-    ("Shatabhisha", "සියාවස", "Rahu"),
-    ("Purva Bhadrapada", "පුවපුටුප", "Jupiter"),
-    ("Uttara Bhadrapada", "උත්‍රපුටුප", "Saturn"),
-    ("Revati", "රේවතී", "Mercury"),
-]
+DSEQ=["Ketu","Venus","Sun","Moon","Mars","Rahu","Jupiter","Saturn","Mercury"]
+DY={"Ketu":7,"Venus":20,"Sun":6,"Moon":10,"Mars":7,"Rahu":18,"Jupiter":16,"Saturn":19,"Mercury":17}
+TZ=timezone(timedelta(hours=5,minutes=30),name="Asia/Colombo")
+PLANETS=[("Sun",swe.SUN),("Moon",swe.MOON),("Mercury",swe.MERCURY),("Venus",swe.VENUS),
+         ("Mars",swe.MARS),("Jupiter",swe.JUPITER),("Saturn",swe.SATURN),("Rahu",swe.MEAN_NODE)]
 
-SRI_LANKA_TZ = timezone(timedelta(hours=5, minutes=30), name="Asia/Colombo")
+def sign(lon):
+    x=lon%360; i=int(x//30); s=SIGNS[i]
+    return {"index":i,"name":s[0],"sinhala":s[1],"english":s[2],"lord":s[3],"degree":x%30}
 
-def local_to_utc(date_text, time_text, timezone_name="Asia/Colombo"):
-    if timezone_name.strip() not in ("Asia/Colombo", "Sri Lanka", "UTC+05:30"):
-        raise ValueError("This Phase 2 build supports Sri Lanka time only. Use Asia/Colombo.")
-    local = datetime.fromisoformat(f"{date_text}T{time_text}").replace(tzinfo=SRI_LANKA_TZ)
-    return local, local.astimezone(timezone.utc)
+def nak(lon):
+    x=lon%360; span=360/27; i=min(26,int(x//span)); p=min(4,int((x-i*span)/(span/4))+1)
+    n=NAK[i]
+    return {"index":i,"name":n[0],"sinhala":n[1],"lord":n[2],"pada":p}
 
-def sign_from_longitude(longitude):
-    value = longitude % 360.0
-    index = int(value // 30.0)
-    degree = value % 30.0
-    name, si, en, lord = SIGNS[index]
-    return {
-        "index": index,
-        "name": name,
-        "sinhala": si,
-        "english": en,
-        "lord": lord,
-        "degree": degree,
-    }
+def navamsa(lon):
+    x=lon%360; ri=int(x//30); part=min(8,int((x%30)/(30/9)))
+    start=ri if ri in (0,3,6,9) else (ri+8)%12 if ri in (1,4,7,10) else (ri+4)%12
+    ni=(start+part)%12; s=SIGNS[ni]
+    return {"index":ni,"name":s[0],"sinhala":s[1],"english":s[2],"lord":s[3],"number":part+1}
 
-def nakshatra_from_longitude(longitude):
-    value = longitude % 360.0
-    span = 360.0 / 27.0
-    index = min(26, int(value // span))
-    within = value - index * span
-    pada = min(4, int(within / (span / 4.0)) + 1)
-    name, si, lord = NAKSHATRAS[index]
-    return {
-        "index": index,
-        "name": name,
-        "sinhala": si,
-        "lord": lord,
-        "pada": pada,
-    }
+def local_utc(ds,ts):
+    local=datetime.fromisoformat(f"{ds}T{ts}").replace(tzinfo=TZ)
+    return local,local.astimezone(timezone.utc)
 
-def calculate_chart(date_text, time_text, latitude, longitude, timezone_name="Asia/Colombo"):
-    local_dt, utc_dt = local_to_utc(date_text, time_text, timezone_name)
+def dasha(birth,moon_lon):
+    nk=nak(moon_lon); first=nk["lord"]; span=360/27
+    balance=DY[first]*(1-(moon_lon%span)/span)
+    idx=DSEQ.index(first); md=[]; cur=birth
+    for i in range(18):
+        lord=DSEQ[(idx+i)%9]; years=balance if i==0 else DY[lord]
+        end=cur+timedelta(days=years*365.2425)
+        md.append({"lord":lord,"start":cur,"end":end,"years":years}); cur=end
+        if (cur-birth).days>120*365: break
+    ad=[]
+    for m in md:
+        mi=DSEQ.index(m["lord"]); cur=m["start"]
+        for j in range(9):
+            lord=DSEQ[(mi+j)%9]; years=DY[m["lord"]]*DY[lord]/120
+            end=min(cur+timedelta(days=years*365.2425),m["end"])
+            ad.append({"maha":m["lord"],"lord":lord,"start":cur,"end":end,"years":years})
+            cur=end
+    return {"birth_nakshatra":nk,"first_lord":first,"balance":balance,"maha":md,"antar":ad}
 
-    hour_ut = (
-        utc_dt.hour
-        + utc_dt.minute / 60.0
-        + utc_dt.second / 3600.0
-        + utc_dt.microsecond / 3600000000.0
-    )
-    jd_ut = swe.julday(utc_dt.year, utc_dt.month, utc_dt.day, hour_ut)
+def current_dasha(d):
+    now=datetime.now(TZ)
+    m=next((x for x in d["maha"] if x["start"]<=now<x["end"]),None)
+    a=next((x for x in d["antar"] if x["start"]<=now<x["end"]),None)
+    return m,a
 
+def calculate(ds,ts,lat,lon):
+    local,utc=local_utc(ds,ts)
+    h=utc.hour+utc.minute/60+utc.second/3600+utc.microsecond/3.6e9
+    jd=swe.julday(utc.year,utc.month,utc.day,h)
     swe.set_sid_mode(swe.SIDM_LAHIRI)
-    flags = swe.FLG_SWIEPH | swe.FLG_SPEED | swe.FLG_SIDEREAL
-
-    planets = []
-    for name, planet in PLANETS:
-        xx, _ = swe.calc_ut(jd_ut, planet, flags)
-        longitude_value = xx[0] % 360.0
-        planets.append({
-            "name": name,
-            "longitude": longitude_value,
-            "latitude": xx[1],
-            "speed": xx[3],
-            "sign": sign_from_longitude(longitude_value),
-            "nakshatra": nakshatra_from_longitude(longitude_value),
-        })
-
-    rahu = next(p for p in planets if p["name"] == "Rahu")
-    ketu_longitude = (rahu["longitude"] + 180.0) % 360.0
-    planets.append({
-        "name": "Ketu",
-        "longitude": ketu_longitude,
-        "latitude": -rahu["latitude"],
-        "speed": -rahu["speed"],
-        "sign": sign_from_longitude(ketu_longitude),
-        "nakshatra": nakshatra_from_longitude(ketu_longitude),
-    })
-
-    cusps, ascmc = swe.houses_ex(
-        jd_ut, float(latitude), float(longitude), b"P",
-        flags=swe.FLG_SIDEREAL
-    )
-    ascendant = ascmc[0] % 360.0
-    asc_sign = sign_from_longitude(ascendant)
-    asc_nak = nakshatra_from_longitude(ascendant)
-
-    # Whole-sign Vedic houses: Ascendant sign is House 1.
-    houses = []
-    for house_no in range(1, 13):
-        sign_index = (asc_sign["index"] + house_no - 1) % 12
-        sign = SIGNS[sign_index]
-        houses.append({
-            "house": house_no,
-            "sign_index": sign_index,
-            "sign": sign[0],
-            "sinhala": sign[1],
-            "english": sign[2],
-            "lord": sign[3],
-            "planets": [],
-        })
-
-    for planet in planets:
-        house_no = ((planet["sign"]["index"] - asc_sign["index"]) % 12) + 1
-        planet["house"] = house_no
-        houses[house_no - 1]["planets"].append(planet["name"])
-
-    return {
-        "local": local_dt,
-        "utc": utc_dt,
-        "jd_ut": jd_ut,
-        "planets": planets,
-        "ascendant": ascendant,
-        "asc_sign": asc_sign,
-        "asc_nakshatra": asc_nak,
-        "cusps": [float(x) % 360.0 for x in cusps],
-        "houses": houses,
-    }
+    flags=swe.FLG_SWIEPH|swe.FLG_SPEED|swe.FLG_SIDEREAL
+    ps=[]
+    for name,pid in PLANETS:
+        xx,_=swe.calc_ut(jd,pid,flags); lo=xx[0]%360
+        ps.append({"name":name,"longitude":lo,"latitude":xx[1],"speed":xx[3],
+                   "sign":sign(lo),"nak":nak(lo),"nav":navamsa(lo)})
+    r=next(p for p in ps if p["name"]=="Rahu"); kl=(r["longitude"]+180)%360
+    ps.append({"name":"Ketu","longitude":kl,"latitude":-r["latitude"],"speed":-r["speed"],
+               "sign":sign(kl),"nak":nak(kl),"nav":navamsa(kl)})
+    _,asc=swe.houses_ex(jd,lat,lon,b"P",flags=swe.FLG_SIDEREAL)
+    al=asc[0]%360; asg=sign(al)
+    houses=[]
+    for n in range(1,13):
+        si=(asg["index"]+n-1)%12; s=SIGNS[si]
+        houses.append({"house":n,"sign_index":si,"sinhala":s[1],"english":s[2],"lord":s[3],"planets":[]})
+    for p in ps:
+        hn=((p["sign"]["index"]-asg["index"])%12)+1; p["house"]=hn; houses[hn-1]["planets"].append(p["name"])
+    return {"local":local,"utc":utc,"jd":jd,"planets":ps,"asc":al,"asc_sign":asg,
+            "asc_nak":nak(al),"asc_nav":navamsa(al),"houses":houses,
+            "dasha":dasha(local,next(p for p in ps if p["name"]=="Moon")["longitude"])}
