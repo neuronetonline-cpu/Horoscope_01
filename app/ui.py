@@ -171,9 +171,24 @@ class MainWindow(QMainWindow):
         return g, f
 
     def new_tab(self):
+        # Entire Birth Details screen is vertically scrollable.
         w = QWidget()
-        root = QVBoxLayout(w)
+        outer = QVBoxLayout(w)
+        outer.setContentsMargins(0, 0, 0, 0)
+
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        scroll.setFrameShape(QFrame.NoFrame)
+
+        content = QWidget()
+        root = QVBoxLayout(content)
+        root.setContentsMargins(12, 12, 12, 18)
         root.setSpacing(12)
+
+        scroll.setWidget(content)
+        outer.addWidget(scroll)
 
         banner = QFrame()
         banner.setStyleSheet("""
