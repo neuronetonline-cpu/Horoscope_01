@@ -26,6 +26,11 @@ def init_db():
             created_at TEXT DEFAULT CURRENT_TIMESTAMP
         )
     """)
+    columns = {row["name"] for row in con.execute("PRAGMA table_info(horoscopes)")}
+    if "utc_time" not in columns:
+        con.execute("ALTER TABLE horoscopes ADD COLUMN utc_time TEXT")
+    if "julian_day" not in columns:
+        con.execute("ALTER TABLE horoscopes ADD COLUMN julian_day REAL")
     con.commit()
     con.close()
 
