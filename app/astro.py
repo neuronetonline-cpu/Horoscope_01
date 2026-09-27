@@ -9,17 +9,26 @@ PLANETS = [
 ]
 
 def local_to_utc(date_text, time_text, timezone_name="Asia/Colombo"):
-    local = datetime.fromisoformat(f"{date_text}T{time_text}").replace(
-        tzinfo=ZoneInfo(timezone_name)
-    )
+    try:
+        zone = ZoneInfo(timezone_name)
+    except Exception as exc:
+        raise RuntimeError(
+            f"Timezone data is unavailable for {timezone_name}. "
+            "Install the tzdata package and restart the application."
+        ) from exc
+
+    local = datetime.fromisoformat(f"{date_text}T{time_text}").replace(tzinfo=zone)
     return local, local.astimezone(ZoneInfo("UTC"))
 
 def calculate_chart(date_text, time_text, latitude, longitude,
                     timezone_name="Asia/Colombo"):
     local_dt, utc_dt = local_to_utc(date_text, time_text, timezone_name)
-    hour_ut = (utc_dt.hour + utc_dt.minute / 60.0 +
-               utc_dt.second / 3600.0 +
-               utc_dt.microsecond / 3600000000.0)
+
+    hour_ut = (
+        utc_dt.hour + utc_dt.minute / 60.0 +
+        utc_dt.second / 3600.0 +
+        utc_dt.microsecond / 3600000000.0
+    )
     jd_ut = swe.julday(utc_dt.year, utc_dt.month, utc_dt.day, hour_ut)
 
     swe.set_sid_mode(swe.SIDM_LAHIRI)
@@ -47,6 +56,7 @@ def calculate_chart(date_text, time_text, latitude, longitude,
         jd_ut, float(latitude), float(longitude), b"P",
         flags=swe.FLG_SIDEREAL
     )
+
     return {
         "local": local_dt,
         "utc": utc_dt,
