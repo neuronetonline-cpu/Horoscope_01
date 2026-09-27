@@ -19,12 +19,138 @@ GRID = {
     6:(3,3), 7:(3,2), 8:(3,1), 9:(3,0), 10:(2,0), 11:(1,0)
 }
 
+
+MODERN_QSS = """
+QMainWindow {
+    background: #eef3f9;
+}
+QTabWidget::pane {
+    border: 1px solid #c9d5e4;
+    background: #f7faff;
+    border-radius: 8px;
+}
+QTabBar::tab {
+    background: #dce6f3;
+    color: #16324f;
+    padding: 10px 20px;
+    margin-right: 2px;
+    border: 1px solid #c6d3e2;
+    border-bottom: none;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    font-weight: 600;
+}
+QTabBar::tab:selected {
+    background: #1769d3;
+    color: white;
+}
+QGroupBox {
+    background: #ffffff;
+    border: 1px solid #cbd8e7;
+    border-radius: 10px;
+    margin-top: 14px;
+    padding: 14px 10px 10px 10px;
+    font-weight: 700;
+    color: #17324d;
+}
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 14px;
+    padding: 0 7px;
+    background: #ffffff;
+}
+QLabel {
+    color: #24384d;
+}
+QLineEdit, QComboBox, QDateEdit, QTimeEdit, QDoubleSpinBox {
+    background: #ffffff;
+    border: 1px solid #b9c8d9;
+    border-radius: 6px;
+    padding: 6px 9px;
+    min-height: 28px;
+    color: #172b3e;
+}
+QLineEdit:focus, QComboBox:focus, QDateEdit:focus, QTimeEdit:focus, QDoubleSpinBox:focus {
+    border: 2px solid #2384e8;
+}
+QPushButton {
+    background: #1769d3;
+    color: white;
+    border: none;
+    border-radius: 7px;
+    padding: 9px 16px;
+    min-height: 34px;
+    font-weight: 700;
+}
+QPushButton:hover {
+    background: #0d5ab8;
+}
+QPushButton:pressed {
+    background: #08498f;
+}
+QTableWidget {
+    background: white;
+    border: 1px solid #c8d5e3;
+    border-radius: 8px;
+    gridline-color: #dbe4ee;
+    alternate-background-color: #f4f8fc;
+}
+QHeaderView::section {
+    background: #dce8f5;
+    color: #17324d;
+    padding: 8px;
+    border: none;
+    border-right: 1px solid #c8d5e3;
+    border-bottom: 1px solid #c8d5e3;
+    font-weight: 700;
+}
+QScrollArea {
+    border: none;
+}
+"""
+
+def style_button(button, kind="blue"):
+    colors = {
+        "green": ("#16a34a", "#12813a"),
+        "blue": ("#1769d3", "#0d5ab8"),
+        "red": ("#dc3545", "#b92332"),
+    }
+    a, b = colors.get(kind, colors["blue"])
+    button.setStyleSheet(f"""
+        QPushButton {{
+            background: {a};
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 9px 16px;
+            min-height: 36px;
+            font-weight: 700;
+        }}
+        QPushButton:hover {{ background: {b}; }}
+    """)
+
+def add_card_title(parent_layout, number, title):
+    label = QLabel(f"{number}   {title}")
+    f = QFont()
+    f.setBold(True)
+    f.setPointSize(11)
+    label.setFont(f)
+    label.setStyleSheet(
+        "color:#164a86; padding:6px 4px; "
+        "border-bottom:2px solid #2d7fe0;"
+    )
+    parent_layout.addWidget(label)
+    return label
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         init_db()
         self.setWindowTitle("Sri Lanka Horoscope — Phase 4")
-        self.resize(1400, 900)
+        self.resize(1500, 950)
+        self.setMinimumSize(1200, 760)
+        self.setStyleSheet(MODERN_QSS)
         self.ui()
 
     def ui(self):
@@ -49,17 +175,29 @@ class MainWindow(QMainWindow):
         root = QVBoxLayout(w)
         root.setSpacing(12)
 
+        banner = QFrame()
+        banner.setStyleSheet("""
+            QFrame {
+                background: qlineargradient(x1:0,y1:0,x2:1,y2:0,
+                    stop:0 #0c2f5f, stop:0.58 #1769d3, stop:1 #071d3a);
+                border-radius: 12px;
+            }
+        """)
+        bl = QVBoxLayout(banner)
+        bl.setContentsMargins(18, 12, 18, 12)
         title = QLabel("ශ්‍රී ලංකා ජ්‍යොතිෂ කේන්දරය")
         title.setAlignment(Qt.AlignCenter)
         font = QFont()
         font.setBold(True)
-        font.setPointSize(18)
+        font.setPointSize(20)
         title.setFont(font)
-        root.addWidget(title)
-
-        subtitle = QLabel("Birth details • Sri Lanka Standard Time • Lahiri / Nirayana")
+        title.setStyleSheet("color:white;")
+        bl.addWidget(title)
+        subtitle = QLabel("Birth Details  •  Sri Lanka Standard Time  •  Lahiri / Nirayana")
         subtitle.setAlignment(Qt.AlignCenter)
-        root.addWidget(subtitle)
+        subtitle.setStyleSheet("color:#dcecff; font-size:11pt;")
+        bl.addWidget(subtitle)
+        root.addWidget(banner)
 
         top = QHBoxLayout()
 
@@ -117,13 +255,13 @@ class MainWindow(QMainWindow):
         root.addWidget(verification)
 
         buttons = QHBoxLayout()
-        for text, fn in [
-            ("Calculate Horoscope / කේන්දරය සාදන්න", self.calc),
-            ("Save / සුරකින්න", self.save),
-            ("Clear / හිස් කරන්න", self.clear)
+        for text, fn, kind in [
+            ("⚙  Calculate Horoscope / කේන්දරය සාදන්න", self.calc, "green"),
+            ("▣  Save / සුරකින්න", self.save, "blue"),
+            ("✕  Clear / හිස් කරන්න", self.clear, "red")
         ]:
             b = QPushButton(text)
-            b.setMinimumHeight(38)
+            style_button(b, kind)
             b.clicked.connect(fn)
             buttons.addWidget(b)
         root.addLayout(buttons)
@@ -140,9 +278,9 @@ class MainWindow(QMainWindow):
         sf.addRow("වත්මන් දශාව", self.cur)
         root.addWidget(summary)
 
-        self.tbl = QTableWidget(0, 8)
+        self.tbl = QTableWidget(0, 9)
         self.tbl.setHorizontalHeaderLabels([
-            "Planet", "Longitude°", "Sign", "House",
+            "#", "Planet", "Longitude°", "Sign", "House",
             "Nakshatra", "Pada", "D9 / Navamsa", "Speed°/day"
         ])
         self.tbl.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
@@ -265,7 +403,7 @@ class MainWindow(QMainWindow):
                 r = self.tbl.rowCount()
                 self.tbl.insertRow(r)
                 vals = [
-                    p["name"], f'{p["longitude"]:.6f}',
+                    str(r + 1), p["name"], f'{p["longitude"]:.6f}',
                     f'{p["sign"]["sinhala"]} / {p["sign"]["english"]}',
                     str(p["house"]),
                     f'{p["nak"]["sinhala"]} / {p["nak"]["name"]}',
