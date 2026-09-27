@@ -1,5 +1,4 @@
-from datetime import datetime
-from zoneinfo import ZoneInfo
+from datetime import datetime, timezone, timedelta
 import swisseph as swe
 
 PLANETS = [
@@ -8,17 +7,21 @@ PLANETS = [
     ("Saturn", swe.SATURN), ("Rahu", swe.MEAN_NODE),
 ]
 
-def local_to_utc(date_text, time_text, timezone_name="Asia/Colombo"):
-    try:
-        zone = ZoneInfo(timezone_name)
-    except Exception as exc:
-        raise RuntimeError(
-            f"Timezone data is unavailable for {timezone_name}. "
-            "Install the tzdata package and restart the application."
-        ) from exc
+SRI_LANKA_TZ = timezone(timedelta(hours=5, minutes=30), name="Asia/Colombo")
 
-    local = datetime.fromisoformat(f"{date_text}T{time_text}").replace(tzinfo=zone)
-    return local, local.astimezone(ZoneInfo("UTC"))
+def local_to_utc(date_text, time_text, timezone_name="Asia/Colombo"):
+    # This application is specifically for Sri Lanka.
+    # Using a fixed UTC+05:30 offset avoids Windows zoneinfo/tzdata
+    # availability problems in the packaged EXE.
+    if timezone_name.strip() not in ("Asia/Colombo", "Sri Lanka", "UTC+05:30"):
+        raise ValueError(
+            "Phase 1 supports Sri Lanka time only. Use Asia/Colombo."
+        )
+
+    local = datetime.fromisoformat(f"{date_text}T{time_text}").replace(
+        tzinfo=SRI_LANKA_TZ
+    )
+    return local, local.astimezone(timezone.utc)
 
 def calculate_chart(date_text, time_text, latitude, longitude,
                     timezone_name="Asia/Colombo"):
