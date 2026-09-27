@@ -53,19 +53,16 @@ class MainWindow(QMainWindow):
         self.date.setCalendarPopup(True)
         self.time = QTimeEdit(QTime(12, 0))
         self.time.setDisplayFormat("HH:mm:ss")
-
         self.place = QComboBox()
         self.place.setEditable(True)
         self.place.addItems(list(PLACES.keys()))
         self.place.currentTextChanged.connect(self.place_changed)
-
         self.lat = QDoubleSpinBox()
         self.lat.setRange(-90, 90)
         self.lat.setDecimals(6)
         self.lon = QDoubleSpinBox()
         self.lon.setRange(-180, 180)
         self.lon.setDecimals(6)
-
         self.tz = QLineEdit("Asia/Colombo")
         self.utc_preview = QLabel("-")
         self.jd_preview = QLabel("-")
@@ -120,7 +117,6 @@ class MainWindow(QMainWindow):
         btn.clicked.connect(self.refresh_search)
         row.addWidget(self.search)
         row.addWidget(btn)
-
         self.saved = QTableWidget(0, 7)
         self.saved.setHorizontalHeaderLabels(
             ["ID", "Name", "Gender", "Birth Date", "Birth Time", "Place", "UTC"]
