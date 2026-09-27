@@ -1,14 +1,20 @@
-# Sri Lanka Horoscope Desktop — Phase 3
+# Sri Lanka Horoscope — Phase 4
 
-Adds to Phase 2:
-- D9 / Navamsa calculation for Lagna and all planets
-- D9 / Navamsa chart
-- D1 to D9 planet placement table
-- Vimshottari Mahadasha
-- Vimshottari Antardasha
-- Birth Nakshatra lord and first Mahadasha balance
-- Current Mahadasha / Antardasha
-- Existing Lahiri, Rashi, Lagna, Nakshatra, houses, save/search and Sri Lanka UTC+05:30 handling
+Desktop Vedic/Jyotish horoscope software targeted to Sri Lankan usage.
 
-GitHub Actions EXE:
+## Phase 4
+- Professional birth-details entry layout inspired by Sri Lankan horoscope software workflows.
+- Sri Lanka country selection.
+- Sri Lankan city/town presets with latitude and longitude.
+- 12-hour birth-time display with AM/PM while calculations remain internally 24-hour.
+- Sri Lanka Standard Time: Asia/Colombo / UTC+05:30.
+- A.D. Gregorian calendar indicator.
+- Calculation verification: UTC and Julian Day.
+- Existing D1/Rashi, D9/Navamsa, Vimshottari Dasha and Saved Horoscope features retained.
+
+## Build
+```bash
+pip install -r requirements.txt
+pip install pyinstaller
 pyinstaller --noconfirm --clean --windowed --name SriLankaHoroscope --collect-all swisseph main.py
+```
